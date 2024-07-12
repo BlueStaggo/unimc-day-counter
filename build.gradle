@@ -1,0 +1,28 @@
+plugins {
+    id 'java'
+}
+
+group = 'io.bluestaggo'
+version = '1.0'
+
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io/' }
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    implementation 'com.github.Querz:NBT:6.1'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'io.bluestaggo.unimcdaycounter.Main'
+    }
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
