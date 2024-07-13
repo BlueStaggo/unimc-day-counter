@@ -1,0 +1,2 @@
+# Universial Minecraft Day Counter
+Are you playing a version of Minecraft Java Edition that does not have a day counter? That is, any version before release 1.8? Well, this program solves this problem! Simply choose a level.dat file and let the program run in the background to tell you what day it is. This is a command line program so make sure to run it in a terminal.
