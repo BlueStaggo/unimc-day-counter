@@ -82,7 +82,11 @@ public final class Main {
             fileDialog.setVisible(true);
 
             String fileName = fileDialog.getFile();
-            if (fileName == null) return;
+            if (fileName == null) {
+                System.err.println("No file chosen.");
+                System.exit(1);
+                return;
+            }
 
             levelFile = new File(fileDialog.getDirectory(), fileName);
             fileDialog.dispose();
@@ -90,6 +94,7 @@ public final class Main {
 
         if (!levelFile.exists() || levelFile.isDirectory()) {
             System.err.println("Failed to open file \"" + levelFile + "\"");
+            System.exit(1);
             return;
         }
 
@@ -141,6 +146,7 @@ public final class Main {
             System.err.println("\033[31mFailed to read \"" + levelFile + "\"");
             e.printStackTrace();
             System.err.print("\033[0m");
+            System.exit(1);
             return false;
         }
 
