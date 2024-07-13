@@ -9,21 +9,50 @@ import net.querz.nbt.tag.StringTag;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public final class Main {
+    private static final String[] help = {
+            "Usage: java -jar unimcdaycounter.jar [<file>] [options]",
+            "File must be level.dat or an Indev .mclevel or leave blank to open a chooser dialog.",
+            "Options:",
+            "    -h --help                  Display this help screen",
+            "    -i --interval=<integer>    Set check interval in seconds, min=1, default=5",
+            "    -m --mute                  Mute beep/bell for new days",
+    };
+
     private static long dayCounter = -1;
     private static short indevTimeCounter;
     private static boolean indev;
+    private static boolean beep;
 
     private Main() {
     }
 
     public static void main(String[] args) {
+        if (hasFlag(args, 'h', "help")) {
+            for (String line : help) {
+                System.out.println(line);
+            }
+            return;
+        }
+        beep = !hasFlag(args, 'm', "mute");
+
+        long interval = 5;
+        String intervalString = getArgValue(args, 'i', "interval");
+        if (intervalString != null) {
+            try {
+                interval = Math.max(Long.parseLong(intervalString), 1);
+            } catch (NumberFormatException ignored) {
+                System.err.println("Bad interval value \"" + intervalString + "\"");
+            }
+        }
+
         File levelFile = null;
-        if (args.length >= 1) {
+        if (args.length >= 1 && !args[0].startsWith("-")) {
             levelFile = new File(args[0]);
             if (!levelFile.exists() || levelFile.isDirectory()) {
                 levelFile = null;
@@ -46,14 +75,6 @@ public final class Main {
         if (!levelFile.exists() || levelFile.isDirectory()) {
             System.err.println("Failed to open file \"" + levelFile + "\"");
             return;
-        }
-
-        long interval = 5;
-        if (args.length >= 2) {
-            try {
-                interval = Math.max(Long.parseLong(args[1]), 1);
-            } catch (NumberFormatException ignored) {
-            }
         }
 
         indev = levelFile.getName().endsWith(".mclevel");
@@ -101,25 +122,42 @@ public final class Main {
                 day = dayCounter;
             }
         } catch (IOException | ClassCastException e) {
-            System.err.println("Failed to read \"" + levelFile + "\"");
+            System.err.println("\033[31mFailed to read \"" + levelFile + "\"");
             e.printStackTrace();
+            System.err.print("\033[0m");
             return false;
         }
 
         if (day == prevDay) return true;
         dayCounter = day;
 
-        String message = worldName + " - ";
+        String message = "\033[33m" + worldName + "\033[90m - \033[36m";
         if (!indev) {
-            message += "Day " + day;
+            message += "Day " + day + "\033[0m";
         } else {
-            message += day + (day == 1 ? " day" : " days") + " counted";
+            message += day + (day == 1 ? " day" : " days") + " counted\033[0m";
         }
 
-        Toolkit.getDefaultToolkit().beep();
-        System.out.println("==========");
+        if (beep) Toolkit.getDefaultToolkit().beep();
+        System.out.println("\033[90m==============================\033[0m");
         System.out.println(message);
 
         return true;
+    }
+
+    private static boolean hasFlag(String[] args, char shortArg, String longArg) {
+        return Arrays.stream(args)
+                .anyMatch(s -> s.startsWith("-") && s.chars().anyMatch(i -> i == shortArg)
+                        || s.equals("--" + longArg));
+    }
+
+    private static String getArgValue(String[] args, char shortArg, String longArg) {
+        if (shortArg == '=' || longArg.contains("=")) return null;
+        return Arrays.stream(args)
+                .filter(s -> s.startsWith("-" + shortArg + "=")
+                        || s.startsWith("--" + longArg + "="))
+                .findFirst()
+                .map(s -> s.substring(s.indexOf('=') + 1))
+                .orElse(null);
     }
 }
