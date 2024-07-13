@@ -9,7 +9,10 @@ import net.querz.nbt.tag.StringTag;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -22,12 +25,19 @@ public final class Main {
             "    -h --help                  Display this help screen",
             "    -i --interval=<integer>    Set check interval in seconds, min=1, default=5",
             "    -m --mute                  Mute beep/bell for new days",
+            "       --motds=<csv file>      Set list of MOTDs to display every day",
+            "       --motd-format=<format>  Format displayed MOTDs, use %MOTD% to reference the MOTD and %ESC% to use ANSI escape codes",
+            "       --fresh-motds           Only display MOTDs on their associated day",
     };
+
+    private static boolean beep;
+    private static String motdFormat;
+    private static boolean freshMotds;
+    private static SortedMap<Long, String> motds;
 
     private static long dayCounter = -1;
     private static short indevTimeCounter;
     private static boolean indev;
-    private static boolean beep;
 
     private Main() {
     }
@@ -39,7 +49,10 @@ public final class Main {
             }
             return;
         }
+
         beep = !hasFlag(args, 'm', "mute");
+        motdFormat = getArgValue(args, '\0', "motd-format");
+        freshMotds = hasFlag(args, '\0', "fresh-motds");
 
         long interval = 5;
         String intervalString = getArgValue(args, 'i', "interval");
@@ -50,6 +63,9 @@ public final class Main {
                 System.err.println("Bad interval value \"" + intervalString + "\"");
             }
         }
+
+        String motdsPath = getArgValue(args, '\0', "motds");
+        if (motdsPath != null) loadMOTDs(motdsPath);
 
         File levelFile = null;
         if (args.length >= 1 && !args[0].startsWith("-")) {
@@ -142,22 +158,73 @@ public final class Main {
         System.out.println("\033[90m==============================\033[0m");
         System.out.println(message);
 
+        if (motds != null) {
+            String motd = null;
+            if (freshMotds) {
+                motd = motds.get(day);
+            } else {
+                for (long key : motds.keySet()) {
+                    if (day < key) continue;
+                    motd = motds.get(key);
+                }
+            }
+
+            if (motd != null) {
+                if (motdFormat != null) {
+                    motd = motdFormat
+                            .replace("%ESC%", "\033")
+                            .replace("%MOTD%", motd) + "\033[0m";
+                }
+                System.out.println(motd);
+            }
+        }
+
         return true;
     }
 
     private static boolean hasFlag(String[] args, char shortArg, String longArg) {
         return Arrays.stream(args)
-                .anyMatch(s -> s.startsWith("-") && s.chars().anyMatch(i -> i == shortArg)
+                .anyMatch(s -> shortArg != '\0' && s.startsWith("-") && !s.startsWith("--") && s.chars().anyMatch(i -> i == shortArg)
                         || s.equals("--" + longArg));
     }
 
     private static String getArgValue(String[] args, char shortArg, String longArg) {
         if (shortArg == '=' || longArg.contains("=")) return null;
         return Arrays.stream(args)
-                .filter(s -> s.startsWith("-" + shortArg + "=")
+                .filter(s -> shortArg != '\0' && s.startsWith("-" + shortArg + "=")
                         || s.startsWith("--" + longArg + "="))
                 .findFirst()
                 .map(s -> s.substring(s.indexOf('=') + 1))
                 .orElse(null);
+    }
+
+    private static void loadMOTDs(String path) {
+        List<String> lines;
+        try {
+            lines = Files.readAllLines(Paths.get(path));
+        } catch (IOException e) {
+            return;
+        }
+
+        TreeMap<Long, String> motds = new TreeMap<>();
+        for (String line : lines) {
+            int comma1 = line.indexOf(',');
+            if (comma1 == -1) continue;
+            int comma2 = line.indexOf(',', comma1 + 1);
+
+            long day;
+            String message;
+
+            try {
+                day = Long.parseLong(line.substring(0, comma1));
+            } catch (NumberFormatException ignored) {
+                continue;
+            }
+            message = line.substring(comma1 + 1, comma2 > comma1 ? comma2 : line.length());
+
+            motds.put(day, message);
+        }
+
+        Main.motds = Collections.unmodifiableSortedMap(motds);
     }
 }

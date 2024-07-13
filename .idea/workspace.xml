@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="87467d4a-4d26-48e7-b5ec-7ebf9ee9c18f" name="Changes" comment="First stuff">
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+    <list default="true" id="87467d4a-4d26-48e7-b5ec-7ebf9ee9c18f" name="Changes" comment="CLI pretty">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/io/bluestaggo/unimcdaycounter/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/bluestaggo/unimcdaycounter/Main.java" afterDir="false" />
     </list>
@@ -72,28 +70,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;Gradle.Build unimc-day-counter.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.unimc-day-counter [:Main.main()].executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.unimc-day-counter [jar].executor&quot;: &quot;Debug&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;Errors&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Gradle.Build unimc-day-counter.executor": "Run",
+    "Gradle.unimc-day-counter [:Main.main()].executor": "Debug",
+    "Gradle.unimc-day-counter [jar].executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "Errors"
   }
-}</component>
-  <component name="RunManager" selected="Gradle.unimc-day-counter [jar]">
+}]]></component>
+  <component name="RunManager" selected="Application.Main">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="io.bluestaggo.unimcdaycounter.Main" />
       <module name="unimc-day-counter.main" />
-      <option name="PROGRAM_PARAMETERS" value="-i=1" />
+      <option name="PROGRAM_PARAMETERS" value="--motds=$USER_HOME$/Documents/version-a-day.csv --motd-format=&quot;%ESC%[31mCurrent version: %ESC%[36m%MOTD%&quot;" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="io.bluestaggo.unimcdaycounter.*" />
@@ -154,7 +152,15 @@
       <option name="project" value="LOCAL" />
       <updated>1720823263565</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="CLI pretty">
+      <option name="closed" value="true" />
+      <created>1720860974742</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1720860974742</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -171,6 +177,7 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="First stuff" />
-    <option name="LAST_COMMIT_MESSAGE" value="First stuff" />
+    <MESSAGE value="CLI pretty" />
+    <option name="LAST_COMMIT_MESSAGE" value="CLI pretty" />
   </component>
 </project>
